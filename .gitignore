@@ -1,9 +1,48 @@
+# Dependencies
 node_modules/
+
+# Environment variables
 .env
+.env.*
+!.env.example
+
+# Logs
 logs/
-backups/
+*.log
+
+# Runtime/session files
 sessions/
+sessions-test/
+
+# Database/data files
 data/
 data-test/
+
+# Backups
+backups/
 backups-test/
-sessions-test/
+
+# Coverage
+coverage/
+.nyc_output/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# npm/yarn cache
+.npm
+.pnpm-store
+.yarn/
+
+# Build outputs
+dist/
+build/
+.next/
+.nuxt/
+.output/
+.cache/
