@@ -16,14 +16,6 @@ router.get('/', requireAuth, async (req, res) => {
     const currentUser = await db.users.get(req.session.userId);
     if (!currentUser) return res.status(404).json({ error: 'User not found' });
 
-    // 1. Enforce email verification to access leaderboard
-    if (!currentUser.emailVerified) {
-      return res.status(403).json({
-        error: 'Email verification required',
-        message: 'You must verify your email address to access the leaderboard features.'
-      });
-    }
-
     const { type } = req.query; // 'alltime' or 'seasonal'
     const isSeasonal = type === 'seasonal';
 

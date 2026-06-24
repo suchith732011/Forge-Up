@@ -272,16 +272,6 @@ const App = {
   },
 
   showAppShell() {
-    if (!this.currentUser.emailVerified) {
-      document.getElementById('view-auth').classList.add('hidden');
-      document.getElementById('view-verification').classList.remove('hidden');
-      document.getElementById('app-shell').classList.add('hidden');
-      
-      const blockedEmail = document.getElementById('blocked-user-email');
-      if (blockedEmail) blockedEmail.textContent = this.currentUser.email;
-      return;
-    }
-
     document.getElementById('view-auth').classList.add('hidden');
     document.getElementById('view-verification').classList.add('hidden');
     document.getElementById('app-shell').classList.remove('hidden');
@@ -295,14 +285,10 @@ const App = {
     if (lvlPill) lvlPill.textContent = `Level ${this.currentUser.level}`;
     if (avatarPill) avatarPill.textContent = this.currentUser.username[0].toUpperCase();
 
-    // Toggle verification banner
+    // Toggle verification banner (kept hidden since verification is optional)
     const banner = document.getElementById('verification-banner');
     if (banner) {
-      if (this.currentUser.emailVerified) {
-        banner.classList.add('hidden');
-      } else {
-        banner.classList.remove('hidden');
-      }
+      banner.classList.add('hidden');
     }
   },
 
@@ -347,10 +333,7 @@ const App = {
         window.StudyTimer.syncWithServer(this.currentUser.activeSession);
       }
 
-      // If user is unverified, don't fetch other protected endpoints
-      if (!this.currentUser.emailVerified) {
-        return;
-      }
+
 
       // Fetch goals & sessions analytics
       const resAnal = await fetch('/api/study/analytics');

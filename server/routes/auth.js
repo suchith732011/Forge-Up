@@ -179,9 +179,6 @@ router.post('/change-password', requireAuth, async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
-    if (!user.emailVerified) {
-      return res.status(403).json({ error: 'Email verification required' });
-    }
 
     const isMatch = await bcrypt.compare(currentPassword, user.password);
     if (!isMatch) {
@@ -342,9 +339,6 @@ router.get('/export-data', requireAuth, async (req, res) => {
   try {
     const user = await db.users.get(req.session.userId);
     if (!user) return res.status(404).json({ error: 'User not found' });
-    if (!user.emailVerified) {
-      return res.status(403).json({ error: 'Email verification required' });
-    }
 
     const sessions = await db.sessions.listByUser(user.id);
     const goals = await db.goals.listByUser(user.id);
@@ -384,9 +378,6 @@ router.post('/delete-account', requireAuth, async (req, res) => {
   try {
     const user = await db.users.get(userId);
     if (!user) return res.status(404).json({ error: 'User not found' });
-    if (!user.emailVerified) {
-      return res.status(403).json({ error: 'Email verification required' });
-    }
 
     // Delete matching sessions, goals, logs and finally the user
     await db.sessions.deleteByUser(userId);
@@ -416,9 +407,6 @@ router.post('/settings', requireAuth, async (req, res) => {
   try {
     const user = await db.users.get(req.session.userId);
     if (!user) return res.status(404).json({ error: 'User not found' });
-    if (!user.emailVerified) {
-      return res.status(403).json({ error: 'Email verification required' });
-    }
 
     const newSettings = {
       profilePublic: profilePublic !== undefined ? !!profilePublic : user.settings.profilePublic,

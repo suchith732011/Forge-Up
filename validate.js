@@ -186,14 +186,14 @@ async function runTests() {
       throw new Error('Email verification request failed');
     }
 
-    // Check leaderboard after verification
+    // Check leaderboard access
     const resLbUnblocked = await fetch(`${BASE_URL}/api/leaderboard`, {
       headers: { Cookie: cookieHeader }
     });
     if (resLbUnblocked.ok) {
-      console.log('   [SUCCESS] Leaderboard access unblocked successfully!');
+      console.log('   [SUCCESS] Leaderboard access verified successfully!');
     } else {
-      throw new Error('Leaderboard access still blocked after verification');
+      throw new Error('Leaderboard access request failed');
     }
 
     // 7. Test Leaderboard Rankings Ties & Stable Sorting

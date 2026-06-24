@@ -12,11 +12,8 @@ async function requireAuth(req, res, next) {
   }
   try {
     const user = await db.users.get(req.session.userId);
-    if (!user || !user.emailVerified) {
-      return res.status(403).json({
-        error: 'Email verification required',
-        message: 'You must verify your email address to access this feature.'
-      });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
     }
     next();
   } catch (err) {

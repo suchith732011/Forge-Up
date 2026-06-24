@@ -156,7 +156,7 @@ class UsersCollection {
         notificationsEnabled: true,
         ...user.settings
       },
-      emailVerified: false,
+      emailVerified: true,
       emailVerificationToken: crypto.randomBytes(32).toString('hex'),
       emailVerificationExpires: Date.now() + 3600000, // 1 hour
       passwordResetToken: null,
