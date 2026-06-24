@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <script>
+    (function() {
+      const theme = localStorage.getItem('forgeup_theme') || 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ForgeUp - Build Consistency. Earn Progress.</title>
+  <!-- Google Fonts: Inter and Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Brand CSS stylesheet -->
+  <link rel="stylesheet" href="/index.css">
+</head>
+<body>
+
+  <!-- 1. Background Grid & Abstract Shapes for Visual Excellence -->
+  <div class="background-decor">
+    <div class="blur-shape shape-primary"></div>
+    <div class="blur-shape shape-secondary"></div>
+  </div>
+
+  <!-- 2. Global Toast Notification System -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- 3. App Main Wrapper -->
+  <div id="app" class="app-container">
+
+    <!-- Auth View (Shown when not logged in) -->
+    <div id="view-auth" class="view-container auth-view hidden">
+      <div class="auth-spacer"></div>
+      <div class="auth-card">
+        <div class="auth-brand">
+          <span class="brand-logo">✨</span>
+          <h1 class="brand-title font-outfit">ForgeUp</h1>
+          <p class="brand-tagline">Build Consistency. Earn Progress.</p>
+        </div>
+
+        <!-- Tab switches -->
+        <div class="auth-tabs">
+          <button id="auth-tab-login" class="auth-tab active">Login</button>
+          <button id="auth-tab-register" class="auth-tab">Sign Up</button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="form-login" class="auth-form">
+          <div class="form-group">
+            <label for="login-username">Username or Email</label>
+            <input type="text" id="login-username" placeholder="Enter username or email" required>
+          </div>
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" placeholder="••••••••" required>
+            <div class="show-password-toggle">
+              <input type="checkbox" id="toggle-login-password">
+              <label for="toggle-login-password">Show Password</label>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Log In</button>
+          <p class="auth-alt-action"><a href="#" id="link-forgot-password">Forgot Password?</a></p>
+        </form>
+
+        <!-- Register Form -->
+        <form id="form-register" class="auth-form hidden">
+          <div class="form-group">
+            <label for="register-username">Username</label>
+            <input type="text" id="register-username" placeholder="e.g. StudyPro" minlength="3" required>
+          </div>
+          <div class="form-group">
+            <label for="register-email">Email Address</label>
+            <input type="email" id="register-email" placeholder="e.g. you@example.com" required>
+          </div>
+          <div class="form-group">
+            <label for="register-password">Password (min 6 chars)</label>
+            <input type="password" id="register-password" placeholder="••••••••" minlength="6" required>
+            <div class="show-password-toggle">
+              <input type="checkbox" id="toggle-register-password">
+              <label for="toggle-register-password">Show Password</label>
+            </div>
+          </div>
+          <div class="auth-terms-checkbox">
+            <input type="checkbox" id="register-terms" required>
+            <label for="register-terms">I agree to the <a href="#" id="register-link-tos">Terms of Service</a> and <a href="#" id="register-link-privacy">Privacy Policy</a>.</label>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+        </form>
+
+        <!-- Forgot Password Form -->
+        <form id="form-forgot" class="auth-form hidden">
+          <h3 class="form-title">Recover Account</h3>
+          <p class="form-subtitle">Enter your email and we'll send you a password reset link.</p>
+          <div class="form-group">
+            <label for="forgot-email">Email Address</label>
+            <input type="email" id="forgot-email" placeholder="e.g. you@example.com" required>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Send Reset Link</button>
+          <p class="auth-alt-action"><a href="#" id="link-back-to-login">Back to Login</a></p>
+        </form>
+
+        <!-- Reset Password Form (Requires Reset Token) -->
+        <form id="form-reset" class="auth-form hidden">
+          <h3 class="form-title">Set New Password</h3>
+          <p class="form-subtitle">Enter your new secure password below.</p>
+          <div class="form-group">
+            <label for="reset-new-password">New Password</label>
+            <input type="password" id="reset-new-password" placeholder="••••••••" minlength="6" required>
+            <div class="show-password-toggle">
+              <input type="checkbox" id="toggle-reset-new-password">
+              <label for="toggle-reset-new-password">Show Password</label>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Reset Password</button>
+        </form>
+      </div>
+      <footer class="auth-footer">
+        <p>© 2026 ForgeUp. Build Consistency. Earn Progress. All rights reserved.</p>
+        <div class="footer-links">
+          <a href="#" id="auth-link-privacy">Privacy Policy</a>
+          <span>•</span>
+          <a href="#" id="auth-link-tos">Terms of Service</a>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Verification Blocked View (Shown when logged in but email not verified) -->
+    <div id="view-verification" class="view-container auth-view hidden">
+      <div class="auth-spacer"></div>
+      <div class="auth-card" style="text-align: center;">
+        <div class="auth-brand">
+          <span class="brand-logo">📧</span>
+          <h2 class="brand-title font-outfit">Verify Your Email</h2>
+          <p class="brand-tagline">To start using ForgeUp, please verify your email address.</p>
+        </div>
+        <p style="font-size: 0.875rem; margin-bottom: 1.5rem; color: var(--color-text-muted); line-height: 1.5;">
+          We sent a verification link to <strong id="blocked-user-email" style="color: var(--color-text-base);">you@example.com</strong>. Please check your inbox (and spam folder) and click the link to activate your account.
+        </p>
+        <button id="btn-resend-blocked-verification" class="btn btn-primary btn-block" style="margin-bottom: 1rem;">
+          Resend Verification Link
+        </button>
+        <button id="btn-logout-blocked-verification" class="btn btn-outline btn-block">
+          Log Out
+        </button>
+      </div>
+      <footer class="auth-footer">
+        <p>© 2026 ForgeUp. Build Consistency. Earn Progress. All rights reserved.</p>
+        <div class="footer-links">
+          <a href="#" id="auth-link-privacy-blocked">Privacy Policy</a>
+          <span>•</span>
+          <a href="#" id="auth-link-tos-blocked">Terms of Service</a>
+        </div>
+      </footer>
+    </div>
+
+    <!-- App Inner Shell (Shown when logged in) -->
+    <div id="app-shell" class="app-shell hidden">
+
+      <!-- Navigation Side/Top bar -->
+      <aside class="sidebar">
+        <div class="sidebar-brand">
+          <span class="sidebar-logo">✨</span>
+          <span class="sidebar-title font-outfit">ForgeUp</span>
+        </div>
+
+        <nav class="sidebar-nav">
+          <a href="#" id="nav-home" class="nav-item active">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-label">Home</span>
+          </a>
+          <a href="#" id="nav-study" class="nav-item">
+            <span class="nav-icon">⏳</span>
+            <span class="nav-label">Study Zone</span>
+          </a>
+          <a href="#" id="nav-leaderboard" class="nav-item">
+            <span class="nav-icon">🏆</span>
+            <span class="nav-label">Leaderboard</span>
+          </a>
+          <a href="#" id="nav-achievements" class="nav-item">
+            <span class="nav-icon">🏅</span>
+            <span class="nav-label">Achievements</span>
+          </a>
+          <a href="#" id="nav-profile" class="nav-item">
+            <span class="nav-icon">👤</span>
+            <span class="nav-label">Profile</span>
+          </a>
+        </nav>
+
+        <div class="sidebar-footer">
+          <button id="theme-toggle-btn" class="theme-toggle-btn" title="Toggle Light/Dark Mode">
+            <span class="theme-icon-light">☀️</span>
+            <span class="theme-icon-dark">🌙</span>
+          </button>
+          <div class="user-pill">
+            <div class="user-avatar" id="avatar-pill">U</div>
+            <div class="user-meta-pill">
+              <div class="user-name-pill" id="username-pill">Username</div>
+              <div class="user-lvl-pill" id="level-pill">Level 1</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content Zone -->
+      <main class="main-content">
+        
+        <!-- Verification Banner (Shown if email not verified) -->
+        <div id="verification-banner" class="banner banner-warning hidden">
+          <div class="banner-content">
+            <span class="banner-icon">⚠️</span>
+            <p><strong>Verify Your Email:</strong> Please verify your email to unlock rankings and account recovery. Check your inbox or <a href="#" id="link-resend-verification">Resend Verification Link</a>.</p>
+          </div>
+        </div>
+
+        <!-- 3A. Home view -->
+        <section id="view-home" class="view-panel active">
+          <div class="welcome-header">
+            <div>
+              <h2 class="page-title font-outfit" id="welcome-message">Hello, Student!</h2>
+              <p class="page-subtitle">Ready to continue your streak? Consistency wins the race.</p>
+            </div>
+            <!-- Streak display -->
+            <div class="streak-widget">
+              <span class="streak-emoji">🔥</span>
+              <div class="streak-text">
+                <span class="streak-count" id="dash-streak">0</span>
+                <span class="streak-label">Day Streak</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Stats Grid -->
+          <div class="stats-grid">
+            <div class="stat-card stat-primary">
+              <div class="stat-icon-wrapper">🎯</div>
+              <div class="stat-details">
+                <span class="stat-value" id="stat-level">Level 1</span>
+                <span class="stat-label" id="stat-xp-details">0 / 100 XP</span>
+                <div class="stat-progress-bar"><div class="stat-progress-fill" id="stat-xp-fill" style="width: 0%"></div></div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon-wrapper">📈</div>
+              <div class="stat-details">
+                <span class="stat-value" id="stat-consistency">0%</span>
+                <span class="stat-label">Consistency Score</span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon-wrapper">🕒</div>
+              <div class="stat-details">
+                <span class="stat-value" id="stat-today-time">0m</span>
+                <span class="stat-label">Studied Today</span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon-wrapper">🗓️</div>
+              <div class="stat-details">
+                <span class="stat-value" id="stat-week-time">0h 0m</span>
+                <span class="stat-label">Studied This Week</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main Dashboard Split -->
+          <div class="dash-split">
+            <!-- Left Panel: Analytics Graphs -->
+            <div class="dash-left card">
+              <div class="card-header">
+                <h3 class="card-title font-outfit">Study Analytics</h3>
+                <div class="chart-toggles">
+                  <button id="btn-chart-daily" class="btn btn-sm btn-outline active">Daily</button>
+                  <button id="btn-chart-weekly" class="btn btn-sm btn-outline">Weekly</button>
+                  <button id="btn-chart-monthly" class="btn btn-sm btn-outline">Monthly</button>
+                </div>
+              </div>
+              <div class="chart-container">
+                <!-- Custom SVG charts container -->
+                <div id="analytics-svg-chart" class="svg-chart-wrapper"></div>
+              </div>
+
+              <!-- Heatmap container -->
+              <div class="heatmap-section">
+                <h4 class="heatmap-title font-outfit">Consistency Calendar (Past 3 Months)</h4>
+                <div id="heatmap-container" class="heatmap-grid"></div>
+                <div class="heatmap-legend">
+                  <span>Less</span>
+                  <div class="legend-box lvl-0"></div>
+                  <div class="legend-box lvl-1"></div>
+                  <div class="legend-box lvl-2"></div>
+                  <div class="legend-box lvl-3"></div>
+                  <div class="legend-box lvl-4"></div>
+                  <span>More</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Panel: Targets & Milestones -->
+            <div class="dash-right">
+              <!-- Targets widget -->
+              <div class="card targets-card">
+                <div class="card-header">
+                  <h3 class="card-title font-outfit">Study Targets</h3>
+                  <button id="btn-show-create-target" class="btn btn-xs btn-primary">Set Target</button>
+                </div>
+                <div class="targets-list" id="targets-list-container">
+                  <p class="placeholder-text">No active study targets. Create one to bolster your Consistency Score!</p>
+                </div>
+              </div>
+
+              <!-- Upcoming Milestones -->
+              <div class="card milestones-card">
+                <div class="card-header">
+                  <h3 class="card-title font-outfit">Milestones & Quote</h3>
+                </div>
+                <div class="quote-box" id="quote-box-container">
+                  <p class="quote-text">"Patience, persistence and perspiration make an unbeatable combination for success."</p>
+                  <span class="quote-author">— Napoleon Hill</span>
+                </div>
+                <div class="milestone-progress-list" id="milestones-container">
+                  <!-- Dynamic milestones -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3B. Study view (Active timer & wellness tips) -->
+        <section id="view-study" class="view-panel">
+          <div class="study-container">
+            <div class="study-left card">
+              <h2 class="view-title font-outfit">Study Session Zone</h2>
+              <p class="view-description">Start a study session to earn XP. There are no study duration caps or forced breaks. Study at your own pace.</p>
+
+              <!-- Session Configuration -->
+              <div class="study-setup" id="study-setup-panel">
+                <div class="form-group">
+                  <label for="study-subject">What are you studying?</label>
+                  <select id="study-subject" class="input-select">
+                    <option value="Mathematics">Mathematics</option>
+                    <option value="Physics">Physics</option>
+                    <option value="Chemistry">Chemistry</option>
+                    <option value="Biology">Biology</option>
+                    <option value="Programming">Programming</option>
+                    <option value="History">History</option>
+                    <option value="Literature">Literature</option>
+                    <option value="Other" selected>Other / General Study</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="study-mode">Study Mode</label>
+                  <select id="study-mode" class="input-select">
+                    <option value="normal" selected>Normal Timer</option>
+                    <option value="pomodoro">Pomodoro Timer</option>
+                  </select>
+                </div>
+                <!-- Pomodoro Options (Hidden by default) -->
+                <div id="pomodoro-options" class="form-group hidden" style="background: rgba(79, 70, 229, 0.05); padding: 0.75rem; border-radius: 0.5rem; border: 1px solid var(--color-card-border); margin-bottom: 1rem;">
+                  <div class="form-group" style="margin-bottom: 0.5rem;">
+                    <label for="pomodoro-preset">Preset Period</label>
+                    <select id="pomodoro-preset" class="input-select">
+                      <option value="25/5" selected>25m Focus / 5m Break</option>
+                      <option value="50/10">50m Focus / 10m Break</option>
+                      <option value="90/20">90m Focus / 20m Break</option>
+                      <option value="custom">Custom Duration</option>
+                    </select>
+                  </div>
+                  <div id="pomodoro-custom-times" class="hidden" style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+                    <div style="flex: 1;">
+                      <label for="pomodoro-custom-study" style="font-size: 0.75rem; font-weight: 500; display: block; margin-bottom: 0.25rem;">Study Mins</label>
+                      <input type="number" id="pomodoro-custom-study" class="input-select" min="1" max="1440" value="25">
+                    </div>
+                    <div style="flex: 1;">
+                      <label for="pomodoro-custom-break" style="font-size: 0.75rem; font-weight: 500; display: block; margin-bottom: 0.25rem;">Break Mins</label>
+                      <input type="number" id="pomodoro-custom-break" class="input-select" min="1" max="1440" value="5">
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="study-notes">Optional Session Notes</label>
+                  <textarea id="study-notes" placeholder="Write down what chapters or concepts you plan to cover..." rows="3" class="input-textarea"></textarea>
+                </div>
+              </div>
+
+              <!-- Live Timer Widget -->
+              <div class="timer-widget">
+                <div class="timer-ring-container">
+                  <svg class="timer-svg" viewBox="0 0 100 100">
+                    <circle class="timer-ring-bg" cx="50" cy="50" r="45"></circle>
+                    <circle id="timer-ring-progress" class="timer-ring-progress" cx="50" cy="50" r="45" stroke-dasharray="283" stroke-dashoffset="0"></circle>
+                  </svg>
+                  <div class="timer-text-display">
+                    <span id="timer-status-indicator" class="timer-status-indicator hidden" style="font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; margin-bottom: 0.25rem; text-transform: uppercase;">STUDYING</span>
+                    <span id="timer-digits">00:00:00</span>
+                    <span id="timer-subject-pill" class="timer-subject-pill hidden">Other</span>
+                    <span id="timer-pomodoro-cycles" class="timer-pomodoro-cycles hidden" style="font-size: 0.75rem; font-weight: 600; color: var(--color-text-muted); margin-top: 0.25rem;">Cycles: 0</span>
+                  </div>
+                </div>
+
+                <div class="timer-controls">
+                  <button id="btn-timer-start" class="btn btn-lg btn-primary">Start Session</button>
+                  <button id="btn-timer-pause" class="btn btn-lg btn-warning hidden">Pause</button>
+                  <button id="btn-timer-resume" class="btn btn-lg btn-primary hidden">Resume</button>
+                  <button id="btn-timer-end" class="btn btn-lg btn-danger hidden">End & Save</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Study Right: Wellness Tips & Historical Sessions -->
+            <div class="study-right">
+              <!-- Wellness Panel -->
+              <div class="card wellness-card">
+                <h3 class="card-title font-outfit">ForgeUp Wellness Tips</h3>
+                <p id="wellness-tip-text">Remember to stretch your back and drink water. Long study hours require a healthy physical body.</p>
+                <button id="btn-next-wellness-tip" class="btn btn-xs btn-outline">Next Tip</button>
+              </div>
+
+              <!-- History Panel -->
+              <div class="card session-history-card">
+                <h3 class="card-title font-outfit">Recent Sessions</h3>
+                <div class="history-list" id="session-history-container">
+                  <!-- Dynamic study sessions list -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3C. Leaderboard view -->
+        <section id="view-leaderboard" class="view-panel">
+          <div class="leaderboard-header">
+            <div>
+              <h2 class="view-title font-outfit">Global Standings</h2>
+              <p class="view-description">Compete with registered students. Rank calculation rewards **consistency (40%)** over study hours (30%).</p>
+            </div>
+            
+            <!-- Tab switches: All-time vs Seasonal -->
+            <div class="leaderboard-tabs">
+              <button id="btn-lb-alltime" class="btn btn-sm btn-outline active">All-Time</button>
+              <button id="btn-lb-seasonal" class="btn btn-sm btn-outline">Seasonal</button>
+            </div>
+          </div>
+
+          <!-- Leaderboard locked banner -->
+          <div id="leaderboard-locked-view" class="card leaderboard-locked hidden">
+            <div class="locked-icon">🔒</div>
+            <h3 class="font-outfit">Leaderboard is Locked</h3>
+            <p id="leaderboard-lock-message">Leaderboard will unlock when enough active students join ForgeUp.</p>
+          </div>
+
+          <!-- Leaderboard Table -->
+          <div id="leaderboard-active-view" class="card leaderboard-card">
+            <div class="table-responsive">
+              <table class="table leaderboard-table">
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Student</th>
+                    <th>Level / XP</th>
+                    <th>Streak</th>
+                    <th>Consistency</th>
+                    <th>Study Time</th>
+                  </tr>
+                </thead>
+                <tbody id="leaderboard-tbody">
+                  <!-- Dynamic users -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3D. Achievements view -->
+        <section id="view-achievements" class="view-panel">
+          <h2 class="view-title font-outfit">Achievements & Badges</h2>
+          <p class="view-description">Complete study sessions, maintain streaks, and accomplish targets to unlock exclusive badges and bonus XP.</p>
+
+          <div class="achievements-grid" id="achievements-container">
+            <!-- Dynamic achievements grid -->
+          </div>
+        </section>
+
+        <!-- 3E. Profile & Settings view -->
+        <section id="view-profile" class="view-panel">
+          <div class="profile-layout">
+            
+            <!-- Left profile stats -->
+            <div class="profile-left card">
+              <div class="profile-avatar-large" id="profile-avatar-char">U</div>
+              <h2 class="profile-username font-outfit" id="profile-name">Username</h2>
+              <p class="profile-joined" id="profile-join-date">Joined: June 2026</p>
+
+              <div class="profile-badge-summary">
+                <span class="badge badge-lvl" id="profile-lvl-badge">Level 1</span>
+                <span class="badge badge-verified" id="profile-verified-badge">Unverified</span>
+              </div>
+
+              <div class="profile-metrics-list">
+                <div class="profile-metric-item">
+                  <span class="metric-label">Consistency Score</span>
+                  <span class="metric-val" id="prof-consistency">0%</span>
+                </div>
+                <div class="profile-metric-item">
+                  <span class="metric-label">Active Days</span>
+                  <span class="metric-val" id="prof-active-days">0</span>
+                </div>
+                <div class="profile-metric-item">
+                  <span class="metric-label">Total Studied</span>
+                  <span class="metric-val" id="prof-study-hours">0 hours</span>
+                </div>
+                <div class="profile-metric-item">
+                  <span class="metric-label">Longest Streak</span>
+                  <span class="metric-val" id="prof-longest-streak">0 days</span>
+                </div>
+                <div class="profile-metric-item">
+                  <span class="metric-label">Pomodoro Cycles</span>
+                  <span class="metric-val" id="prof-pomodoro-cycles">0</span>
+                </div>
+                <div class="profile-metric-item">
+                  <span class="metric-label">Avg Session Duration</span>
+                  <span class="metric-val" id="prof-avg-duration">0 mins</span>
+                </div>
+                <div class="profile-metric-item">
+                  <span class="metric-label">Most Used Preset</span>
+                  <span class="metric-val" id="prof-fav-preset">N/A</span>
+                </div>
+              </div>
+
+              <!-- Button links -->
+              <div class="profile-action-links">
+                <button id="btn-profile-how-works" class="btn btn-outline btn-block">How ForgeUp Works</button>
+                <button id="btn-profile-logout" class="btn btn-outline btn-block text-danger" style="margin-top: 0.5rem;">Log Out</button>
+              </div>
+            </div>
+
+            <!-- Right settings panel -->
+            <div class="profile-right card">
+              <h3 class="card-title font-outfit">Account Settings</h3>
+              
+              <!-- Settings Form -->
+              <form id="form-settings">
+                <h4 class="settings-sec-title">Privacy & Notifications</h4>
+                
+                <div class="toggle-group">
+                  <div class="toggle-details">
+                    <span class="toggle-title">Public Leaderboard Visibility</span>
+                    <span class="toggle-desc">If disabled, other users will only see your username and rank (your XP, level, and stats remain hidden).</span>
+                  </div>
+                  <input type="checkbox" id="settings-public-visibility" class="toggle-input" checked>
+                </div>
+
+                <div class="toggle-group">
+                  <div class="toggle-details">
+                    <span class="toggle-title">Enable Streak Reminders</span>
+                    <span class="toggle-desc">Simulates browser alerts for streak protection reminders and goal deadlines.</span>
+                  </div>
+                  <input type="checkbox" id="settings-notifications" class="toggle-input" checked>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Save Settings</button>
+              </form>
+
+              <hr class="settings-divider">
+
+              <!-- Password change -->
+              <form id="form-change-password">
+                <h4 class="settings-sec-title">Change Password</h4>
+                <div class="form-group">
+                  <label for="change-pwd-current">Current Password</label>
+                  <input type="password" id="change-pwd-current" required>
+                  <div class="show-password-toggle">
+                    <input type="checkbox" id="toggle-change-pwd-current">
+                    <label for="toggle-change-pwd-current">Show Password</label>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="change-pwd-new">New Password (min 6 chars)</label>
+                  <input type="password" id="change-pwd-new" minlength="6" required>
+                  <div class="show-password-toggle">
+                    <input type="checkbox" id="toggle-change-pwd-new">
+                    <label for="toggle-change-pwd-new">Show Password</label>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-outline">Update Password</button>
+              </form>
+
+              <hr class="settings-divider">
+
+              <!-- Dangerous actions -->
+              <h4 class="settings-sec-title text-danger">Data Management & Account Deletion</h4>
+              <p class="settings-desc">Export your study stats or delete your account permanently. Account deletion removes all stats, goals, and sessions.</p>
+              
+              <div class="data-actions-row">
+                <button id="btn-download-data" class="btn btn-outline">Download My Data (JSON)</button>
+                <button id="btn-delete-account" class="btn btn-danger">Delete Account</button>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- Footer containing policy and terms links -->
+        <footer class="app-footer">
+          <p>© 2026 ForgeUp. Build Consistency. Earn Progress. All rights reserved.</p>
+          <div class="footer-links">
+            <a href="#" id="footer-link-privacy">Privacy Policy</a>
+            <span>•</span>
+            <a href="#" id="footer-link-tos">Terms of Service</a>
+            <span>•</span>
+            <a href="#" id="footer-link-how-works">How It Works</a>
+          </div>
+        </footer>
+
+      </main>
+
+    </div>
+
+  </div>
+
+  <!-- 4. MODALS & OVERLAYS -->
+
+  <!-- A. Target Creation Modal -->
+  <div id="modal-create-target" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title font-outfit">Create Study Target</h3>
+        <button id="btn-close-create-target" class="modal-close">×</button>
+      </div>
+      <form id="form-create-target">
+        <div class="form-group">
+          <label for="target-title">Target Title</label>
+          <input type="text" id="target-title" placeholder="e.g. Daily Math Practice" required>
+        </div>
+        <div class="form-group">
+          <label for="target-desc">Description</label>
+          <input type="text" id="target-desc" placeholder="e.g. Solve exercises in chapter 4">
+        </div>
+        <div class="form-group">
+          <label for="target-type">Target Scope</label>
+          <select id="target-type" class="input-select">
+            <option value="daily">Daily Target (Repeats daily)</option>
+            <option value="weekly">Weekly Target (Repeats weekly)</option>
+            <option value="custom" selected>Custom Target (One-off goal)</option>
+          </select>
+        </div>
+        <!-- Time study field (optional, auto-ticks progress) -->
+        <div id="target-time-field" class="form-group">
+          <label for="target-minutes">Required Study Time (Minutes)</label>
+          <input type="number" id="target-minutes" placeholder="e.g. 60" min="1">
+          <span class="field-help">If set, study sessions in the specified category will automatically progress this target!</span>
+        </div>
+        <div class="form-group">
+          <label for="target-deadline">Deadline</label>
+          <input type="datetime-local" id="target-deadline" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Add Target</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- B. How It Works Modal -->
+  <div id="modal-how-works" class="modal-overlay hidden">
+    <div class="modal-card modal-large">
+      <div class="modal-header">
+        <h3 class="modal-title font-outfit">How ForgeUp Works</h3>
+        <button id="btn-close-how-works" class="modal-close">×</button>
+      </div>
+      <div class="modal-body-scroll font-inter">
+        <h4 class="font-outfit">Core Philosophy: Consistency Over Cramming</h4>
+        <p>ForgeUp is built on the scientific principle that distributed practice (studying consistently every day) leads to significantly better long-term memory retention and academic success compared to massed practice (cramming all night before an exam). Our platform gamifies your daily study habits, rewarding disciplined, regular sessions through interactive stats, level progress, badges, and streaks.</p>
+
+        <h4 class="font-outfit">Timer Modes & Study Zones</h4>
+        <p>We provide two distinct modes inside the Study Session Zone to accommodate different productivity styles:</p>
+        <ul>
+          <li><strong>Normal Timer:</strong> A stopwatch mode that counts upward from <code>00:00:00</code>. This is ideal for open-ended study blocks where you want to work continuously and pause or stop manually when you are finished.</li>
+          <li><strong>Pomodoro Timer:</strong> A structured mode based on the Pomodoro Technique. It counts down and automatically alternates between focus periods (e.g., 25, 50, or 90 minutes) and break periods (5, 10, or 20 minutes). Transition notifications alert you with visual changes to guide your session.</li>
+        </ul>
+
+        <h4 class="font-outfit">XP, Leveling, and Streak Mechanics</h4>
+        <p>Your efforts are tracked and rewarded using several gamified variables:</p>
+        <div class="info-card-grid">
+          <div class="info-card">
+            <h5>⚡ XP & Leveling</h5>
+            <p>You earn <strong>1 XP for every 1 minute</strong> spent in active focus. Completing custom study targets awards a bonus of <strong>50 XP</strong>. Accumulating XP advances your student level dynamically.</p>
+          </div>
+          <div class="info-card">
+            <h5>🔥 Streak Preservation</h5>
+            <p>Your daily streak increases by 1 for each calendar day you complete at least one session of 10+ seconds. Failing to record a session resets your streak to 0, which directly impacts your rank multipliers.</p>
+          </div>
+          <div class="info-card">
+            <h5>📈 Consistency Score</h5>
+            <p>This dynamic score (0–100) measures your long-term study patterns, factoring in consecutive active days, weekly target completion rates, and historical study session regularity.</p>
+          </div>
+          <div class="info-card">
+            <h5>🏆 Global Leaderboard</h5>
+            <p>Ranks are computed using a balanced composite formula: <strong>40% Consistency Score + 30% Study Time + 20% Active Streak Length + 10% Unlocked Badges</strong>. Consistency is heavily weighted to prevent cramming.</p>
+          </div>
+        </div>
+
+        <h4 class="font-outfit">Leaderboard Standings: All-Time vs. Seasonal</h4>
+        <p>You can toggle between two separate views on the leaderboard to compare your performance with other students:</p>
+        <ul>
+          <li><strong>All-Time Standings:</strong> This view ranks users based on their entire study history since registration. The "Study Time" component of the ranking score is calculated using your total lifetime study minutes, and your overall lifetime XP is displayed.</li>
+          <li><strong>Seasonal Standings:</strong> This view resets at the start of every calendar month. It isolates rankings to show who is currently active and consistent this month. The "Study Time" component is calculated using <em>only</em> focus sessions recorded during the current calendar month. It displays your seasonal XP, giving new users a fair chance to climb to the top of the ranks every single month.</li>
+          <li><strong>Privacy Masking:</strong> If you disable "Public Leaderboard Visibility" in your settings, other users will only see your username and overall rank. Your levels, XP, streaks, and focus metrics will be masked with <code>N/A</code> or hidden on the standings table to protect your privacy.</li>
+        </ul>
+
+        <h4 class="font-outfit">Anti-Cheat & Session Validation</h4>
+        <p>To preserve leaderboard integrity, ForgeUp runs real-time server-side checks. Overlapping study logs, artificial session durations, duplicate submissions, and client-side clock tampering are automatically flagged and rejected. Active sessions survive browser crashes and page refreshes by synchronizing client states with the server database.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- C. Privacy Policy Modal -->
+  <div id="modal-privacy" class="modal-overlay hidden">
+    <div class="modal-card modal-large">
+      <div class="modal-header">
+        <h3 class="modal-title font-outfit">Privacy Policy</h3>
+        <button id="btn-close-privacy" class="modal-close">×</button>
+      </div>
+      <div class="modal-body-scroll font-inter">
+        <p class="text-muted">Last updated: June 2026</p>
+        <p>At ForgeUp, we are committed to protecting your personal information and your right to privacy. This Privacy Policy explains what information we collect, how we protect it, and how you can exercise control over your data.</p>
+
+        <h4 class="font-outfit">1. Information We Collect</h4>
+        <p>We only collect the minimal amount of data necessary to provide a functional and secure experience:</p>
+        <ul>
+          <li><strong>Account Information:</strong> Your username, email address, and hashed password. Email addresses are encrypted using industry-standard AES-256-GCM encryption before being written to our database.</li>
+          <li><strong>Study Session Logs:</strong> Duration of focus blocks, subject categories, session timestamps, and optional user notes.</li>
+          <li><strong>Academic Goals:</strong> Targets created, target descriptions, scope parameters, and completion records.</li>
+          <li><strong>Audit & Security Logs:</strong> Active session heartbeats, failed login attempts, and rate-limiting metrics to monitor platform security.</li>
+        </ul>
+
+        <h4 class="font-outfit">2. How We Protect Your Data</h4>
+        <p>We implement a robust security architecture to protect your details from unauthorized access:</p>
+        <ul>
+          <li>All communication is protected by HTTP security headers and Cross-Site Request Forgery (CSRF) tokens.</li>
+          <li>Emails are encrypted at-rest using cryptographic keys kept separate from public endpoints.</li>
+          <li>We store passwords using secure hashing algorithms, making it impossible for administrators or external parties to read your actual password.</li>
+        </ul>
+
+        <h4 class="font-outfit">3. Profile Visibility & Leaderboard Masking</h4>
+        <p>By default, registered users participate in the Global Standings. Your level, total study hours, current streak, and badges are visible to other logged-in students. You can disable this by toggling <strong>Public Leaderboard Visibility</strong> in your Settings. In private mode, other users will only see your username and overall rank, and all your detailed statistics will be masked.</p>
+
+        <h4 class="font-outfit">4. Cookies & Session Management</h4>
+        <p>ForgeUp uses a single, secure session cookie (<code>forgeup.sid</code>) configured with <code>HttpOnly</code> and <code>SameSite=Strict</code> flags. This cookie is used strictly to identify your authenticated state and recover active study timers in the event of browser crashes. We do not use tracking or advertising cookies.</p>
+
+        <h4 class="font-outfit">5. Data Ownership, Portability, and Deletion</h4>
+        <p>You have full ownership of your educational history. You can exercise your rights at any time directly through the Profile panel:</p>
+        <ul>
+          <li><strong>Data Export:</strong> Clicking "Download My Data" generates a complete, structured JSON export of all your account history, including milestones, goals, and study sessions.</li>
+          <li><strong>Account Deletion:</strong> Clicking "Delete Account" permanently deletes your profile, encrypted email, hashed credentials, study history, and backups from our databases. This action is irreversible.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- D. Terms of Service Modal -->
+  <div id="modal-tos" class="modal-overlay hidden">
+    <div class="modal-card modal-large">
+      <div class="modal-header">
+        <h3 class="modal-title font-outfit">Terms of Service</h3>
+        <button id="btn-close-tos" class="modal-close">×</button>
+      </div>
+      <div class="modal-body-scroll font-inter">
+        <p class="text-muted">Last updated: June 2026</p>
+        <p>Welcome to ForgeUp. By creating an account or using our application, you agree to comply with and be bound by the following Terms of Service. Please read them carefully.</p>
+
+        <h4 class="font-outfit">1. Acceptable Use License</h4>
+        <p>ForgeUp grants you a personal, non-exclusive, non-transferable, revocable license to use the application solely for tracking and gamifying your academic productivity. You agree not to copy, reverse-engineer, modify, or distribute any part of the application for commercial purposes without explicit permission.</p>
+
+        <h4 class="font-outfit">2. Account Responsibility & Security</h4>
+        <p>You are responsible for maintaining the confidentiality of your account credentials, including your password. You agree to provide a valid email address and to verify it to gain full access to the Leaderboard. To protect accounts from brute-force attacks, ForgeUp locks profiles for 10 minutes after 5 consecutive failed login attempts.</p>
+
+        <h4 class="font-outfit">3. Fair Play & Anti-Cheat Policy</h4>
+        <p>To ensure a fair and motivational environment for all students, ForgeUp strictly prohibits artificial progress inflation. You agree to use the timers only for genuine, active study sessions. Forbidden behaviors include:</p>
+        <ul>
+          <li>Submitting sessions with durations that exceed actual studied time.</li>
+          <li>Injecting mock sessions or spoofing API requests to gain unauthorized XP.</li>
+          <li>Tampering with client-side system clocks or using browser automation tools to simulate study ticks.</li>
+          <li>Attempting to run simultaneous active timers across multiple tabs, devices, or accounts.</li>
+        </ul>
+        <p>Violating this anti-cheat policy will result in the immediate rejection of the affected session, removal of illegitimate XP, and potential permanent suspension of your account.</p>
+
+        <h4 class="font-outfit">4. Standings Integrity</h4>
+        <p>The Global Standings reflect the actual consistency and discipline of active students. Generating sample ghost profiles or manipulating data is restricted to authorized local developer testing modes. ForgeUp reserves the right to audit leaderboard entries and remove accounts displaying spam, offensive usernames, or fraudulent statistics.</p>
+
+        <h4 class="font-outfit">5. Disclaimers & Limitation of Liability</h4>
+        <p>ForgeUp is provided "as-is" and "as-available" without warranties of any kind. We do not guarantee that the application will be uninterrupted, error-free, or resilient against local hardware crashes. In no event shall ForgeUp, its developers, or affiliates be liable for any data loss, study progress resets, or service disruptions.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. FLOATING DEVELOPER PANEL (Dev Mode only) -->
+  <div id="dev-control-panel" class="dev-panel hidden">
+    <div class="dev-panel-header">
+      <span class="dev-logo">🛠️</span>
+      <span class="dev-title font-outfit">Dev Testing Console</span>
+    </div>
+    <div class="dev-panel-body">
+      <p class="dev-help-text">This console is active because <code>?dev=true</code> is set. It is strictly disabled in production.</p>
+      <div class="dev-actions">
+        <button id="btn-dev-seed" class="btn btn-xs btn-primary">Seed 30 Ghost Users</button>
+        <button id="btn-dev-cleanup" class="btn btn-xs btn-danger">Clear Ghost Users</button>
+      </div>
+      <p id="dev-status" class="dev-status-text">Ready</p>
+    </div>
+  </div>
+
+  <!-- Load charts rendering and timer logic -->
+  <script src="/js/charts.js"></script>
+  <script src="/js/timer.js"></script>
+  <!-- Main app script -->
+  <script src="/js/app.js"></script>
+</body>
+</html>

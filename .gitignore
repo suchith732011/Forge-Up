@@ -1,0 +1,9 @@
+node_modules/
+.env
+logs/
+backups/
+sessions/
+data/
+data-test/
+backups-test/
+sessions-test/
